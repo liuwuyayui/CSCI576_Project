@@ -44,8 +44,9 @@ class CanvasSchedule extends ScheduledService<Integer> {
             
             @Override
             protected void updateValue(Integer value) {
-                String framePath = "/soccer/frame" + startFrame + ".jpg";
-                canvas.getGraphicsContext2D().drawImage(new Image(framePath), 0, 0);
+//                String framePath = "/soccer/frame" + startFrame + ".jpg";
+                String framePath = Utils.directory + "/frame" + startFrame + ".jpg";
+                canvas.getGraphicsContext2D().drawImage(new Image(framePath, Utils.REQUEST_WIDTH, Utils.REQUEST_HEIGHT, true, true), 0, 0);
                 slider.setValue(startFrame);
             }
         };

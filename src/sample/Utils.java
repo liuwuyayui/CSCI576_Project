@@ -12,10 +12,18 @@ public class Utils {
     public static final int NTSC_FRAME_RATE = 30;
     public static final int FILM_FRAME_RATE = 24;
     public static int FRAME_RATE = 30;
-    public static int FRAMES_LENGTH = 500;
+    public static int FRAMES_LENGTH;
+    
+    public static final int REQUEST_WIDTH = 640;
+    public static final int REQUEST_HEIGHT = 360;
     
     // Application window properties
-    public static final int STAGE_WIDTH = 900;
-    public static final int STAGE_HEIGHT = 600;
+    public static final int STAGE_WIDTH = 640;
+    public static final int STAGE_HEIGHT = 400;
+    public static final int PROGRESS_SLIDER_PRE_WIDTH = 400;
+    
+    // directory
+    public static String directory;
+    
     
 }

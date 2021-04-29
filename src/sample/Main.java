@@ -1,8 +1,11 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -12,20 +15,27 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
     String framePath = "/soccer/frame";
+    String directory = null;
     int curFrame = 0;
     boolean isPlaying = false;
     final CanvasSchedule[] canvasSchedule = new CanvasSchedule[1];
     
+    
     @Override
     public void start(Stage primaryStage) throws Exception {
-        MediaBar mediaBar = new MediaBar(Utils.FRAMES_LENGTH);
+        MediaBar mediaBar = new MediaBar(0);
         Canvas canvas = new Canvas(Utils.STAGE_WIDTH, Utils.STAGE_HEIGHT);
         //display the first frame on the canvas
-        canvas.getGraphicsContext2D().drawImage(new Image(framePath + 0 + ".jpg"), 0, 0);
+//        Image videoFrame = new Image(framePath + 0 + ".jpg",
+//                Utils.REQUEST_WIDTH,
+//                Utils.REQUEST_HEIGHT,
+//                true,
+//                true);
+//        canvas.getGraphicsContext2D().drawImage(videoFrame, 0, 0);
         
         // handlers
         mediaBar.progressSlider.setOnMouseClicked(event -> {
-            int pointedFrame = (int) event.getX();
+            int pointedFrame = (int) (event.getX() * 1.0 / Utils.PROGRESS_SLIDER_PRE_WIDTH * Utils.FRAMES_LENGTH);
             System.out.println(pointedFrame);  // TODO: remove
             mediaBar.progressSlider.setValue(pointedFrame);
             
@@ -35,12 +45,24 @@ public class Main extends Application {
                 canvasSchedule[0].start();
             } else {
                 curFrame = pointedFrame;
-                canvas.getGraphicsContext2D().drawImage(new Image(framePath + pointedFrame + ".jpg"), 0, 0);
+                System.out.println(pointedFrame);
+                canvas.getGraphicsContext2D().drawImage(new Image(Utils.directory + "/frame" + pointedFrame + ".jpg",
+                        Utils.REQUEST_WIDTH,
+                        Utils.REQUEST_HEIGHT,
+                        true,
+                        true), 0, 0);
             }
         });
         mediaBar.playOrPause.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (event.getButton().name().equals(MouseButton.PRIMARY.name())) {  // left clip
                 if (!isPlaying) {
+                    if (Utils.directory == null) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        
+                        alert.setHeaderText("Frames Folder Undefined");
+                        alert.setContentText("Please choose a folder containing jpeg frames");
+                        alert.show();
+                    }
                     // update icon
                     mediaBar.playOrPause.setGraphic(new ImageView(mediaBar.playerPause));
                     // play from "curFrame"
@@ -55,6 +77,13 @@ public class Main extends Application {
                 isPlaying = !isPlaying;
             }
         });
+        
+//        mediaBar.progressSlider.valueProperty().addListener(new ChangeListener<Number>() {
+//            @Override
+//            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+//                System.out.println(newValue);
+//            }
+//        });
         
         // layout
         AnchorPane ap = new AnchorPane();

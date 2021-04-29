@@ -4,6 +4,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -44,6 +45,7 @@ public class MediaBar extends HBox {
         });
         
         directoryChooser.setGraphic(new ImageView(iconFolder));
+        directoryChooser.setTooltip(new Tooltip("Select a Folder"));
         directoryChooser.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -53,18 +55,24 @@ public class MediaBar extends HBox {
 //                dc.setInitialDirectory(new File(""));
                 File directory = dc.showDialog(stage);
                 if (directory != null) {
-                    System.out.println(directory.getAbsolutePath());
+                    
+                    Utils.directory = "file:" + directory.getAbsolutePath();
+                    System.out.println(Utils.directory);
                     File[] files = directory.listFiles();
+                    
                     if (files != null) {
-                        for (File f : files) {
-                            System.out.println(f.getName());
-                        }
+                        Utils.FRAMES_LENGTH = files.length;
+                        progressSlider.setMax(Utils.FRAMES_LENGTH);
+                        System.out.println("contains " + files.length + "frames");
+//                        for (File f : files) {
+//                            System.out.println(f.getName());
+//                        }
                     }
                 }
             }
         });
         
-        progressSlider.setPrefWidth(500);
+        progressSlider.setPrefWidth(Utils.PROGRESS_SLIDER_PRE_WIDTH);
         
         getChildren().addAll(playOrPause, movieChooser, directoryChooser, progressSlider);
         setHeight(50.0);

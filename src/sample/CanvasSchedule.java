@@ -5,6 +5,7 @@ import javafx.concurrent.Task;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
+import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
 class CanvasSchedule extends ScheduledService<Integer> {
@@ -19,22 +20,23 @@ class CanvasSchedule extends ScheduledService<Integer> {
         this.startFrame = startFrame;
         setDelay(Duration.millis(0));
         setPeriod(Duration.millis(1000.0 / Utils.FRAME_RATE));
+        
     }
     
-    public CanvasSchedule(CanvasSchedule cs) {
-        this.canvas = cs.canvas;
-        this.slider = cs.slider;
-        this.startFrame = cs.startFrame;
-        setDelay(Duration.millis(0));
-        setPeriod(Duration.millis(1000.0 / Utils.FRAME_RATE));
-    }
+//    public CanvasSchedule(CanvasSchedule cs) {
+//        this.canvas = cs.canvas;
+//        this.slider = cs.slider;
+//        this.startFrame = cs.startFrame;
+//        setDelay(Duration.millis(0));
+//        setPeriod(Duration.millis(1000.0 / Utils.FRAME_RATE));
+//    }
     
     
     @Override
     protected Task<Integer> createTask() {
         return new Task<Integer>() {
             @Override
-            protected Integer call() throws Exception {
+            protected Integer call() {
                 if (startFrame >= lastFrame) {
                     this.cancel();
                 }

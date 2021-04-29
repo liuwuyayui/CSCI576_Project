@@ -1,84 +1,65 @@
 package sample;
 
-import javafx.event.EventHandler;
+
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 
-import java.io.File;
+import javafx.scene.layout.HBox;
+
 
 public class MediaBar extends HBox {
-    Image playerPlay = new Image(Utils.icon_playerPlay, 20, 20, true, false);
-    Image playerPause = new Image(Utils.icon_playerPause, 20, 20, true, false);
-    Image iconMovie = new Image(Utils.icon_movie, 20, 20, true, false);
-    Image iconFolder = new Image(Utils.ICON_FOLDER, 20, 20, true, false);
+    Image playerPlay = new Image(Utils.icon_playerPlay, 20, 20, true, true);
+    Image playerPause = new Image(Utils.icon_playerPause, 20, 20, true, true);
+    Image iconMusic = new Image(Utils.ICON_MUSIC, 20, 20, true, true);
+    Image iconFolder = new Image(Utils.ICON_FOLDER, 20, 20, true, true);
+    Image iconVol = new Image(Utils.ICON_VOL, 20, 20, true, true);
+    Image iconMute = new Image(Utils.ICON_MUTE, 20, 20, true, true);
+    
     
     Button playOrPause = new Button();
-    Button movieChooser = new Button();
+    Button bgmChooser = new Button();
     Button directoryChooser = new Button();
     Slider progressSlider;
-
+    Button volButton;
+    Slider volSlider;
+    boolean isMute;
+    double prevVolume;
+    
     public MediaBar(int barLength) {
-        this.progressSlider = new Slider(0, barLength, 0);
-        playOrPause.setGraphic(new ImageView(playerPlay));
-//        playOrPause.setPrefWidth(100);
-        movieChooser.setGraphic(new ImageView(iconMovie));
-        movieChooser.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                Stage stage = new Stage();
-                FileChooser fc = new FileChooser();
-                fc.setTitle("Please choose an MPEG4 file");
-                File file = fc.showOpenDialog(stage);
-                if (file != null) {
-                    System.out.println(file.getAbsolutePath());
-                }
-            }
-        });
-        
         directoryChooser.setGraphic(new ImageView(iconFolder));
         directoryChooser.setTooltip(new Tooltip("Select a Folder"));
-        directoryChooser.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                Stage stage = new Stage();
-                DirectoryChooser dc = new DirectoryChooser();
-
-//                dc.setInitialDirectory(new File(""));
-                File directory = dc.showDialog(stage);
-                if (directory != null) {
-                    
-                    Utils.directory = "file:" + directory.getAbsolutePath();
-                    System.out.println(Utils.directory);
-                    File[] files = directory.listFiles();
-                    
-                    if (files != null) {
-                        Utils.FRAMES_LENGTH = files.length;
-                        progressSlider.setMax(Utils.FRAMES_LENGTH);
-                        System.out.println("contains " + files.length + "frames");
-//                        for (File f : files) {
-//                            System.out.println(f.getName());
-//                        }
-                    }
-                }
-            }
-        });
         
+        
+        playOrPause.setGraphic(new ImageView(playerPlay));
+//        playOrPause.setPrefWidth(100);
+        bgmChooser.setTooltip(new Tooltip("Select Corresponding BGM"));
+        bgmChooser.setGraphic(new ImageView(iconMusic));
+        
+        progressSlider = new Slider(0, barLength, 0);
         progressSlider.setPrefWidth(Utils.PROGRESS_SLIDER_PRE_WIDTH);
         
-        getChildren().addAll(playOrPause, movieChooser, directoryChooser, progressSlider);
+        volButton = new Button();
+        volButton.setGraphic(new ImageView(iconVol));
+        
+        
+        volSlider = new Slider(0, 1, 0.5);
+        volSlider.setOrientation(Orientation.VERTICAL);
+        volSlider.setPrefHeight(70);
+        volSlider.isShowTickLabels();
+        volSlider.setShowTickMarks(true);
+        volSlider.setMajorTickUnit(0.25);
+        volSlider.setMinorTickCount(1);
+        
+        getChildren().addAll(playOrPause, directoryChooser, bgmChooser, progressSlider, volButton, volSlider);
         setHeight(50.0);
         setAlignment(Pos.CENTER);
-        setSpacing(10.0);
-
+        setSpacing(5.0);
+        
         
     }
     

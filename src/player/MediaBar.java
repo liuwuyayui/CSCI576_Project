@@ -1,4 +1,4 @@
-package sample;
+package player;
 
 
 import javafx.geometry.Orientation;

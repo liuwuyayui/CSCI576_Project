@@ -1,4 +1,4 @@
-package sample;
+package player;
 
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
@@ -6,7 +6,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Slider;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
-import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 

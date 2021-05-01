@@ -47,7 +47,7 @@ public class MediaBar extends HBox {
         volButton.setGraphic(new ImageView(iconVol));
         
         
-        volSlider = new Slider(0, 1, 0.5);
+        volSlider = new Slider(0, 1, 1);
         volSlider.setOrientation(Orientation.VERTICAL);
         volSlider.setPrefHeight(70);
         volSlider.isShowTickLabels();

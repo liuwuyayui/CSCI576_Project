@@ -158,7 +158,7 @@ public class CSCI576VideoShotSegmentationProject {
         double[] framesValue = new double[totalFrames];
         ArrayList<Integer> videoBreakpoints = new ArrayList<>();
         int[][][][] intRGBFramePair;
-        int videoBreakpointsIndex = 0;
+
 
         // Calculate value of each frame(i) to frame(i+1)
         for(int i = 0; i < frames-1; i++){
@@ -172,40 +172,16 @@ public class CSCI576VideoShotSegmentationProject {
         // Select frames that meets the threshold
         for(int i = 2; i < framesValue.length-2; i++){
             if(framesValue[i] >= (framesValue[i-1]*10)){
-                // Filter breakpoint noise with minimal shot window
-                if(i > (videoBreakpoints.get(videoBreakpointsIndex)+minimumFramesPerShot)) {
-                    videoBreakpoints.add(i + 1);
-                    videoBreakpointsIndex++;
-                }
+                videoBreakpoints.add(i + 1);
             }
         }
         videoBreakpoints.add(totalFrames-1);
 
-        // Process frames adjacent to first and last frame
-        //System.out.println("Before Processing: "+videoBreakpoints.toString());
-        if(videoBreakpoints.size() == 3){
-            if((videoBreakpoints.get(1) < 5) || ((videoBreakpoints.get(1)+5) > (totalFrames-1))){
-                videoBreakpoints.remove(1);
-            }
-        }
-        else{
-            if(videoBreakpoints.get(1) < 5){
-                videoBreakpoints.remove(1);
-            }
-            if((videoBreakpoints.get(videoBreakpoints.size()-2)+5) > (totalFrames-1)){
-                videoBreakpoints.remove((videoBreakpoints.size()-2));
-            }
-        }
+        // Filter noise in frames with frame window
+        filterNoiseWithFrameWindow(videoBreakpoints, totalFrames);
 
-        //System.out.println("After Processing: "+videoBreakpoints.toString());
-        int[][] videoShots = new int[videoBreakpoints.size()-1][2];
         // Convert breakpoints to shots
-        for(int i = 0; i < videoShots.length-1; i++){
-            videoShots[i][0] = videoBreakpoints.get(i);
-            videoShots[i][1] = videoBreakpoints.get(i+1)-1;
-        }
-        videoShots[videoShots.length-1][0] = videoBreakpoints.get(videoShots.length-1);
-        videoShots[videoShots.length-1][1] = videoBreakpoints.get(videoShots.length);
+        int[][] videoShots = formShots(videoBreakpoints);
 
         return videoShots;
     }
@@ -257,6 +233,50 @@ public class CSCI576VideoShotSegmentationProject {
         }
 
         return sumAbsoluteDifferenceR+sumAbsoluteDifferenceG+sumAbsoluteDifferenceB;
+    }
+
+    public static void filterNoiseWithFrameWindow(ArrayList<Integer> videoBreakpoints, int totalFrames){
+        System.out.println("Before Processing: "+videoBreakpoints.toString());
+        // Filter breakpoint noise with minimal shot window
+        int videoBreakpointsIndex = 1;
+        while(videoBreakpointsIndex < videoBreakpoints.size()-3){
+            if(videoBreakpoints.get(videoBreakpointsIndex+1) < (videoBreakpoints.get(videoBreakpointsIndex)+minimumFramesPerShot)) {
+                videoBreakpoints.remove(videoBreakpointsIndex+1);
+            }
+            else{
+                videoBreakpointsIndex++;
+            }
+        }
+        System.out.println("After Filter Processing: "+videoBreakpoints.toString());
+
+        // Process frames adjacent to first and last frame
+        if(videoBreakpoints.size() == 3){
+            if((videoBreakpoints.get(1) < 5) || ((videoBreakpoints.get(1)+5) > (totalFrames-1))){
+                videoBreakpoints.remove(1);
+            }
+        }
+        else if(videoBreakpoints.size() > 3){
+            if(videoBreakpoints.get(1) < 5){
+                videoBreakpoints.remove(1);
+            }
+            if((videoBreakpoints.get(videoBreakpoints.size()-2)+5) > (totalFrames-1)){
+                videoBreakpoints.remove((videoBreakpoints.size()-2));
+            }
+        }
+        System.out.println("After Adjacent Processing: "+videoBreakpoints.toString());
+    }
+
+    public static int[][] formShots(ArrayList<Integer> videoBreakpoints){
+        // Convert breakpoints to shots
+        int[][] videoShots = new int[videoBreakpoints.size()-1][2];
+        for(int i = 0; i < videoShots.length-1; i++){
+            videoShots[i][0] = videoBreakpoints.get(i);
+            videoShots[i][1] = videoBreakpoints.get(i+1)-1;
+        }
+        videoShots[videoShots.length-1][0] = videoBreakpoints.get(videoShots.length-1);
+        videoShots[videoShots.length-1][1] = videoBreakpoints.get(videoShots.length);
+
+        return videoShots;
     }
 
     public static void printArray(int[][] videoShots){

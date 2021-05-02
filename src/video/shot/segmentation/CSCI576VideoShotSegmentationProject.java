@@ -35,12 +35,13 @@ public class CSCI576VideoShotSegmentationProject {
         args = new String[]{"/Users/edmondsitu/Desktop/project_dataset/frames_rgb/soccer/frame0.rgb"};
         ren.showIms(args);
         */
-        String RGBFramesFolderPath = "/Users/edmondsitu/Desktop/project_dataset/frames_rgb/concert";
+        String RGBFramesFolderPath = "/Users/daddy/Movies/project_dataset/frames_rgb/concert";
         System.out.println("Processing video shot segmentation of all frames...");
         //ArrayList<Integer> videoBreakpoints = CSCI576VideoShotSegmentationProject.videoShotSegmentationSumAbsoluteDifference(width, height, frames, threshold, RGBFramesFolderPath);
         int[][] videoShots = CSCI576VideoShotSegmentationProject.videoShotSegmentationColorSpaceHistogram(width, height, frames, RGBFramesFolderPath);
         System.out.print("Video Shots: ");
         printArray(videoShots);
+        System.out.println("Number of Shots: "+videoShots.length);
         System.out.println("Number of Shots: "+videoShots.length);
         System.out.println("Complete");
     }
@@ -62,7 +63,8 @@ public class CSCI576VideoShotSegmentationProject {
             // Process frames in pairs
             if(firstFrame%100 == 0) {
                 //System.out.println("Frames: [" + firstFrame + ", " + (firstFrame + 1) + "]");
-                System.out.println("Frames Index: "+firstFrame);
+//                System.out.println("Frames Index: "+firstFrame);
+                System.out.print("\rFrames Index: "+firstFrame);
             }
             file1 = new File(RGBFramesFolderPath+"/frame"+firstFrame+".rgb");
             raf1 = new RandomAccessFile(file1, "r");
@@ -166,6 +168,7 @@ public class CSCI576VideoShotSegmentationProject {
             framesValue[i] = colorSpaceHistogramSumAbsoluteDifference(width, height, intRGBFramePair, i);
             //System.out.println("Frame #"+i+" Absolute Difference: "+framesValue[i]);
         }
+        System.out.println();
 
         // Ensure first and last frame is included in the set
         videoBreakpoints.add(0);

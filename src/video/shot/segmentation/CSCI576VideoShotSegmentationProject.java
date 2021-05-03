@@ -19,10 +19,12 @@ public class CSCI576VideoShotSegmentationProject {
     public static int width = 320;
     public static int height = 180;
     //public static int frames = 162000;
-    public static int frames = 1000;
+    public static int totalFrames = 1000;
     //public static double threshold = 4000000;
     public static double threshold = 4000000;
     public static int minimumFramesPerShot = 30; // ~ 1 second
+    public static String myRGBFramesFolderPath = "/Users/edmondsitu/Desktop/project_dataset/frames_rgb/concert";
+
 
     /**
      * @param args the command line arguments
@@ -35,13 +37,13 @@ public class CSCI576VideoShotSegmentationProject {
         args = new String[]{"/Users/edmondsitu/Desktop/project_dataset/frames_rgb/soccer/frame0.rgb"};
         ren.showIms(args);
         */
-        String RGBFramesFolderPath = "/Users/daddy/Movies/project_dataset/frames_rgb/concert";
+        //String RGBFramesFolderPath = "/Users/daddy/Movies/project_dataset/frames_rgb/concert";
+        String RGBFramesFolderPath = "/Users/edmondsitu/Desktop/project_dataset/frames_rgb/concert";
         System.out.println("Processing video shot segmentation of all frames...");
         //ArrayList<Integer> videoBreakpoints = CSCI576VideoShotSegmentationProject.videoShotSegmentationSumAbsoluteDifference(width, height, frames, threshold, RGBFramesFolderPath);
-        int[][] videoShots = CSCI576VideoShotSegmentationProject.videoShotSegmentationColorSpaceHistogram(width, height, frames, RGBFramesFolderPath);
+        int[][] videoShots = CSCI576VideoShotSegmentationProject.videoShotSegmentationColorSpaceHistogram(width, height, totalFrames, RGBFramesFolderPath);
         System.out.print("Video Shots: ");
         printArray(videoShots);
-        System.out.println("Number of Shots: "+videoShots.length);
         System.out.println("Number of Shots: "+videoShots.length);
         System.out.println("Complete");
     }
@@ -163,7 +165,7 @@ public class CSCI576VideoShotSegmentationProject {
 
 
         // Calculate value of each frame(i) to frame(i+1)
-        for(int i = 0; i < frames-1; i++){
+        for(int i = 0; i < totalFrames-1; i++){
             intRGBFramePair = readFrameRGBForPair(width, height, i, RGBFramesFolderPath);
             framesValue[i] = colorSpaceHistogramSumAbsoluteDifference(width, height, intRGBFramePair, i);
             //System.out.println("Frame #"+i+" Absolute Difference: "+framesValue[i]);
@@ -239,7 +241,7 @@ public class CSCI576VideoShotSegmentationProject {
     }
 
     public static void filterNoiseWithFrameWindow(ArrayList<Integer> videoBreakpoints, int totalFrames){
-        System.out.println("Before Processing: "+videoBreakpoints.toString());
+        //System.out.println("Before Processing: "+videoBreakpoints.toString());
         // Filter breakpoint noise with minimal shot window
         int videoBreakpointsIndex = 1;
         while(videoBreakpointsIndex < videoBreakpoints.size()-3){
@@ -250,7 +252,7 @@ public class CSCI576VideoShotSegmentationProject {
                 videoBreakpointsIndex++;
             }
         }
-        System.out.println("After Filter Processing: "+videoBreakpoints.toString());
+        //System.out.println("After Filter Processing: "+videoBreakpoints.toString());
 
         // Process frames adjacent to first and last frame
         if(videoBreakpoints.size() == 3){
@@ -266,7 +268,7 @@ public class CSCI576VideoShotSegmentationProject {
                 videoBreakpoints.remove((videoBreakpoints.size()-2));
             }
         }
-        System.out.println("After Adjacent Processing: "+videoBreakpoints.toString());
+        //System.out.println("After Adjacent Processing: "+videoBreakpoints.toString());
     }
 
     public static int[][] formShots(ArrayList<Integer> videoBreakpoints){

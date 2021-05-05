@@ -13,9 +13,8 @@ public class AudioAnalysis {
   public static final int FRAME_RATE = 30;
   public static final int SAMPLE_RATE_PER_SECOND = 48000;
   public static final int SAMPLE_RATE_PER_MILLI = 48;
-  public static final int BUFFER_SIZE = 1600;
   
-  public List<Long> rmsVols(String wavPath) throws IOException, WavFileException {
+  private List<Long> rmsVols(String wavPath) throws IOException, WavFileException {
     List<Long> result = new ArrayList<>();
     
     // Open the wav file specified as the first argument
@@ -56,6 +55,15 @@ public class AudioAnalysis {
     return result;
   }
   
+  /**
+   *
+   * @param wavPath Path of wav file
+   * @param startFrame Start frame of the shot to be analysed
+   * @param endFrame End frame of the shot to be analysed
+   * @return relative RMS volume of the given shot
+   * @throws IOException
+   * @throws WavFileException
+   */
   public long normalizedVolume(String wavPath, int startFrame, int endFrame) throws IOException, WavFileException {
     if (startFrame > endFrame) {
       throw new IllegalArgumentException("Endframe must greater than startFrame");
@@ -79,6 +87,5 @@ public class AudioAnalysis {
     for (int i = 0; i < 16200; i += 200) {
       audioAnalysis.normalizedVolume(path, i, i + 99);
     }
-    
   }
 }

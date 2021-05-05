@@ -30,14 +30,6 @@ class CanvasSchedule extends ScheduledService<Integer> {
         setPeriod(Duration.millis(1000.0 / Utils.FRAME_RATE));
     }
     
-//    public CanvasSchedule(CanvasSchedule cs) {
-//        this.canvas = cs.canvas;
-//        this.slider = cs.slider;
-//        this.startFrame = cs.startFrame;
-//        setDelay(Duration.millis(0));
-//        setPeriod(Duration.millis(1000.0 / Utils.FRAME_RATE));
-//    }
-    
     
     @Override
     protected Task<Integer> createTask() {

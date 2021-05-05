@@ -14,7 +14,7 @@ public class AudioAnalysis {
   public static final int SAMPLE_RATE_PER_SECOND = 48000;
   public static final int SAMPLE_RATE_PER_MILLI = 48;
   
-  private List<Long> rmsVols(String wavPath) throws IOException, WavFileException {
+  private static List<Long> rmsVols(String wavPath) throws IOException, WavFileException {
     List<Long> result = new ArrayList<>();
     
     // Open the wav file specified as the first argument
@@ -64,7 +64,7 @@ public class AudioAnalysis {
    * @throws IOException
    * @throws WavFileException
    */
-  public long normalizedVolume(String wavPath, int startFrame, int endFrame) throws IOException, WavFileException {
+  public static long normalizedVolume(String wavPath, int startFrame, int endFrame) throws IOException, WavFileException {
     if (startFrame > endFrame) {
       throw new IllegalArgumentException("Endframe must greater than startFrame");
     }

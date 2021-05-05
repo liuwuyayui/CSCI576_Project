@@ -17,8 +17,9 @@ public class MotionVector {
 
     public static void main(String[] args){
         System.out.println("Processing motion vector scoring for all shots...");
-        int[][] videoShots = CSCI576VideoShotSegmentationProject.videoShotSegmentationColorSpaceHistogram(width, height, totalFrames, myRGBFramesFolderPath);
+        int[][] videoShots = CSCI576VideoShotSegmentationProject.videoShotSegmentationColorSpaceHistogram(width, height, 1000, myRGBFramesFolderPath);
         double[] motionVectorScores = motionVectorOfFrameShots(videoShots);
+        /*
         for(int i = 0; i < motionVectorScores.length; i++){
             motionVectorScores[i] = Math.round(motionVectorScores[i]*100.0)/100.0;
         }
@@ -44,13 +45,23 @@ public class MotionVector {
         }
         System.out.println("Motion Vector Scores After Normalizing to Maximum Score: "+Arrays.toString(motionVectorScores));
         System.out.println("Number of Motion Vector Scores:"+motionVectorScores.length);
+        */
+        double[] normalizedMotionVectorScores = normalizeMotionVectorScore(motionVectorScores, videoShots);
         System.out.println("Complete");
+        /*
+        for(int i = 0; i < videoShots.length; i++){
+            System.out.println("["+videoShots[i][0]+", "+videoShots[i][1]+"]"+" = "+motionVectorScores[i]);
+        }
+        */
+        for(int i = 0; i < videoShots.length; i++){
+            System.out.println("["+videoShots[i][0]+", "+videoShots[i][1]+"]"+" = "+normalizedMotionVectorScores[i]);
+        }
     }
 
     public static double[] motionVectorOfFrameShots(int[][] videoShots){
-        System.out.print("Video Shots: ");
-        CSCI576VideoShotSegmentationProject.printArray(videoShots);
-        System.out.println("Number of Shots: "+videoShots.length);
+        //System.out.print("Video Shots: ");
+        //CSCI576VideoShotSegmentationProject.printArray(videoShots);
+        //System.out.println("Number of Shots: "+videoShots.length);
         double[] motionVectorScores = new double[videoShots.length];
 
         // Process each shot
@@ -248,6 +259,27 @@ public class MotionVector {
 
     public static double calculateDisplacement(int x1, int y1, int x2, int y2){
         return Math.sqrt(Math.pow(x1-x2, 2)+Math.pow(y1-y2, 2));
+    }
+
+    public static double[] normalizeMotionVectorScore(double[] motionVectorScores, int[][] videoShots){
+        double[] normalizedMotionVectorScores = new double[motionVectorScores.length];
+        // Normalize to length of each shot
+        for(int i = 0; i < motionVectorScores.length; i++){
+            normalizedMotionVectorScores[i] = motionVectorScores[i]/((videoShots[i][1]-videoShots[i][0])+1);
+        }
+        // Find maximum value of motion vector scores
+        double maxScore = normalizedMotionVectorScores[0];
+        for(int i = 1; i < normalizedMotionVectorScores.length; i++){
+            if(normalizedMotionVectorScores[i] > maxScore){
+                maxScore = normalizedMotionVectorScores[i];
+            }
+        }
+        // Normalize between 0 and 1
+        for(int i = 0; i < normalizedMotionVectorScores.length; i++){
+            normalizedMotionVectorScores[i] = normalizedMotionVectorScores[i]/maxScore;
+        }
+
+        return normalizedMotionVectorScores;
     }
 
     public static void printBlockArray(int[][][] myArray) {

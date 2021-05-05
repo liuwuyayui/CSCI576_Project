@@ -23,7 +23,7 @@ public class CSCI576VideoShotSegmentationProject {
     //public static double threshold = 4000000;
     public static double threshold = 4000000;
     public static int minimumFramesPerShot = 30; // ~ 1 second
-    public static String myRGBFramesFolderPath = "/Users/edmondsitu/Desktop/project_dataset/frames_rgb/concert";
+    public static String myRGBFramesFolderPath = "/Users/daddy/Movies/project_dataset/frames_rgb/concert";
 
 
     /**

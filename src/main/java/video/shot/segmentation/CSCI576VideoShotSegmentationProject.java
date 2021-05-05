@@ -1,5 +1,7 @@
 package video.shot.segmentation;
 
+import video.shot.selection.VideoSummary;
+
 import java.awt.*;
         import java.awt.image.*;
         import java.io.*;
@@ -15,6 +17,7 @@ import javax.swing.*;
  */
 public class CSCI576VideoShotSegmentationProject {
 
+    /*
     // Video frame size 320x180
     public static int width = 320;
     public static int height = 180;
@@ -24,7 +27,7 @@ public class CSCI576VideoShotSegmentationProject {
     public static double threshold = 4000000;
     public static int minimumFramesPerShot = 30; // ~ 1 second
     public static String myRGBFramesFolderPath = "/Users/daddy/Movies/project_dataset/frames_rgb/concert";
-
+    */
 
     /**
      * @param args the command line arguments
@@ -38,10 +41,15 @@ public class CSCI576VideoShotSegmentationProject {
         ren.showIms(args);
         */
         //String RGBFramesFolderPath = "/Users/daddy/Movies/project_dataset/frames_rgb/concert";
-        String RGBFramesFolderPath = "/Users/edmondsitu/Desktop/project_dataset/frames_rgb/concert";
+        //String RGBFramesFolderPath = "/Users/edmondsitu/Desktop/project_dataset/frames_rgb/concert";
+        int width = VideoSummary.width;
+        int height = VideoSummary.height;
+        int totalFrames = VideoSummary.totalFrames;
+        int minimumFramesPerShot = VideoSummary.minimumFramesPerShot;
+        String myRGBFramesFolderPath = VideoSummary.myRGBFramesFolderPath;
         System.out.println("Processing video shot segmentation of all frames...");
         //ArrayList<Integer> videoBreakpoints = CSCI576VideoShotSegmentationProject.videoShotSegmentationSumAbsoluteDifference(width, height, totalFrames, threshold, RGBFramesFolderPath);
-        int[][] videoShots = CSCI576VideoShotSegmentationProject.videoShotSegmentationColorSpaceHistogram(width, height, totalFrames, RGBFramesFolderPath);
+        int[][] videoShots = CSCI576VideoShotSegmentationProject.videoShotSegmentationColorSpaceHistogram(width, height, totalFrames, minimumFramesPerShot, myRGBFramesFolderPath);
         System.out.print("Video Shots: ");
         printArray(videoShots);
         System.out.println("Number of Shots: "+videoShots.length);
@@ -96,6 +104,8 @@ public class CSCI576VideoShotSegmentationProject {
                 }
             }
             //System.out.println("("+intRGBFramePair[0][0][0][0]+", "+intRGBFramePair[0][0][0][1]+", "+intRGBFramePair[0][0][0][2]+")");
+            raf1.close();
+            raf2.close();
         }
         catch (FileNotFoundException e){
             e.printStackTrace();
@@ -142,6 +152,7 @@ public class CSCI576VideoShotSegmentationProject {
                 }
             }
             //System.out.println("("+intRGBFramePair[0][0][0][0]+", "+intRGBFramePair[0][0][0][1]+", "+intRGBFramePair[0][0][0][2]+")");
+            raf1.close();
         }
         catch (FileNotFoundException e){
             e.printStackTrace();
@@ -204,7 +215,7 @@ public class CSCI576VideoShotSegmentationProject {
     }
 
 
-    public static int[][] videoShotSegmentationColorSpaceHistogram(int width, int height, int totalFrames, String RGBFramesFolderPath){
+    public static int[][] videoShotSegmentationColorSpaceHistogram(int width, int height, int totalFrames, int minimumFramesPerShot, String RGBFramesFolderPath){
         double[] framesValue = new double[totalFrames];
         ArrayList<Integer> videoBreakpoints = new ArrayList<>();
         int[][][][] intRGBFramePair;
@@ -236,7 +247,7 @@ public class CSCI576VideoShotSegmentationProject {
         videoBreakpoints.add(totalFrames-1);
 
         // Filter noise in frames with frame window
-        filterNoiseWithFrameWindow(videoBreakpoints, totalFrames);
+        filterNoiseWithFrameWindow(videoBreakpoints, totalFrames, minimumFramesPerShot);
 
         // Convert breakpoints to shots
         int[][] videoShots = formShots(videoBreakpoints);
@@ -244,7 +255,7 @@ public class CSCI576VideoShotSegmentationProject {
         return videoShots;
     }
 
-    public static double[] videoShotSegmentationColorSpaceHistogramForFramesValue(int width, int height, int totalFrames, String RGBFramesFolderPath){
+    public static double[] videoShotSegmentationColorSpaceHistogramForFramesValue(int width, int height, int totalFrames, int minimumFramesPerShot, String RGBFramesFolderPath){
         double[] framesValue = new double[totalFrames];
         ArrayList<Integer> videoBreakpoints = new ArrayList<>();
         int[][][][] intRGBFramePair;
@@ -269,7 +280,7 @@ public class CSCI576VideoShotSegmentationProject {
         videoBreakpoints.add(totalFrames-1);
 
         // Filter noise in frames with frame window
-        filterNoiseWithFrameWindow(videoBreakpoints, totalFrames);
+        filterNoiseWithFrameWindow(videoBreakpoints, totalFrames, minimumFramesPerShot);
 
         // Convert breakpoints to shots
         int[][] videoShots = formShots(videoBreakpoints);
@@ -326,7 +337,7 @@ public class CSCI576VideoShotSegmentationProject {
         return sumAbsoluteDifferenceR+sumAbsoluteDifferenceG+sumAbsoluteDifferenceB;
     }
 
-    public static void filterNoiseWithFrameWindow(ArrayList<Integer> videoBreakpoints, int totalFrames){
+    public static void filterNoiseWithFrameWindow(ArrayList<Integer> videoBreakpoints, int totalFrames, int minimumFramesPerShot){
         //System.out.println("Before Processing: "+videoBreakpoints.toString());
         // Filter breakpoint noise with minimal shot window
         int videoBreakpointsIndex = 1;
@@ -370,7 +381,7 @@ public class CSCI576VideoShotSegmentationProject {
         return videoShots;
     }
 
-    public static void RGBtoHSV(int[][][] intOriginalRGB, double[][][] doubleOriginalHSV){
+    public static void RGBtoHSV(int width, int height, int[][][] intOriginalRGB, double[][][] doubleOriginalHSV){
         for(int y = 0; y < height; y++){
             for(int x = 0; x < width; x++){
                 double r = intOriginalRGB[y][x][0];
@@ -410,7 +421,20 @@ public class CSCI576VideoShotSegmentationProject {
                     h += 360;
                 }
 
+                // Add to avoid NaN
+                if(delta == 0){
+                    h = 0;
+                }
+
                 doubleOriginalHSV[y][x][0] = h;
+                /*
+                System.out.println("RGB to HSV: Hue="+doubleOriginalHSV[y][x][0]);
+                if(Double.isNaN(doubleOriginalHSV[y][x][0])){
+                    System.out.println("delta="+delta);
+                    System.out.println("min="+min);
+                    System.out.println("max="+max);
+                }
+                */
                 doubleOriginalHSV[y][x][1] = s;
                 doubleOriginalHSV[y][x][2] = v;
             }
@@ -466,6 +490,7 @@ public class CSCI576VideoShotSegmentationProject {
                     img.setRGB(x,y,pixOriginal);
                 }
             }
+            raf.close();
         }
         catch (FileNotFoundException e){
             e.printStackTrace();

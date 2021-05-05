@@ -64,7 +64,7 @@ public class AudioAnalysis {
    * @throws IOException
    * @throws WavFileException
    */
-  public static long normalizedVolume(String wavPath, int startFrame, int endFrame) throws IOException, WavFileException {
+  public static long normalizedVolume(String wavPath, int startFrame, int endFrame, int index) throws IOException, WavFileException {
     if (startFrame > endFrame) {
       throw new IllegalArgumentException("Endframe must greater than startFrame");
     }
@@ -77,7 +77,8 @@ public class AudioAnalysis {
     
     result = (long) Math.sqrt(result / (endFrame - startFrame));
     
-    System.out.printf("Normalized Volume = %d for Shot[%d, %d]\n", result, startFrame, endFrame);
+    //System.out.printf("Normalized Volume = %d for Shot[%d, %d]\n", result, startFrame, endFrame);
+    System.out.print("\rShots Index: "+index);
     return result;
   }
   
@@ -85,7 +86,7 @@ public class AudioAnalysis {
     String path = "/Users/daddy/Movies/project_dataset/audio/steel.wav";
     AudioAnalysis audioAnalysis = new AudioAnalysis();
     for (int i = 0; i < 16200; i += 200) {
-      audioAnalysis.normalizedVolume(path, i, i + 99);
+      audioAnalysis.normalizedVolume(path, i, i + 99, i);
     }
   }
 }

@@ -1,6 +1,7 @@
 package analysis;
 
 import video.shot.segmentation.CSCI576VideoShotSegmentationProject;
+import video.shot.selection.VideoSummary;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,15 +11,20 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class MotionVector {
-    public static int width = CSCI576VideoShotSegmentationProject.width;
-    public static int height = CSCI576VideoShotSegmentationProject.height;
-    public static int totalFrames = CSCI576VideoShotSegmentationProject.totalFrames;
-    public static String myRGBFramesFolderPath = CSCI576VideoShotSegmentationProject.myRGBFramesFolderPath;
+    //public static int width = CSCI576VideoShotSegmentationProject.width;
+    //public static int height = CSCI576VideoShotSegmentationProject.height;
+    //public static int totalFrames = CSCI576VideoShotSegmentationProject.totalFrames;
+    //public static String myRGBFramesFolderPath = CSCI576VideoShotSegmentationProject.myRGBFramesFolderPath;
 
     public static void main(String[] args){
+        int width = VideoSummary.width;
+        int height = VideoSummary.height;
+        int totalFrames = VideoSummary.totalFrames;
+        int minimumFramesPerShot = VideoSummary.minimumFramesPerShot;
+        String myRGBFramesFolderPath = VideoSummary.myRGBFramesFolderPath;
         System.out.println("Processing motion vector scoring for all shots...");
-        int[][] videoShots = CSCI576VideoShotSegmentationProject.videoShotSegmentationColorSpaceHistogram(width, height, 1000, myRGBFramesFolderPath);
-        double[] motionVectorScores = motionVectorOfFrameShots(videoShots);
+        int[][] videoShots = CSCI576VideoShotSegmentationProject.videoShotSegmentationColorSpaceHistogram(width, height, totalFrames, minimumFramesPerShot, myRGBFramesFolderPath);
+        double[] motionVectorScores = motionVectorOfFrameShots(width, height, videoShots, myRGBFramesFolderPath);
         /*
         for(int i = 0; i < motionVectorScores.length; i++){
             motionVectorScores[i] = Math.round(motionVectorScores[i]*100.0)/100.0;
@@ -58,7 +64,7 @@ public class MotionVector {
         }
     }
 
-    public static double[] motionVectorOfFrameShots(int[][] videoShots){
+    public static double[] motionVectorOfFrameShots(int width, int height, int[][] videoShots, String myRGBFramesFolderPath){
         //System.out.print("Video Shots: ");
         //CSCI576VideoShotSegmentationProject.printArray(videoShots);
         //System.out.println("Number of Shots: "+videoShots.length);
@@ -67,14 +73,14 @@ public class MotionVector {
         // Process each shot
         for(int i = 0; i < videoShots.length; i++){
             System.out.print("\rShots Index: "+i);
-            motionVectorScores[i] = calculateMotionVectorScore(videoShots[i][0], videoShots[i][1]);
+            motionVectorScores[i] = calculateMotionVectorScore(width, height, videoShots[i][0], videoShots[i][1], myRGBFramesFolderPath);
         }
         System.out.println();
 
         return motionVectorScores;
     }
 
-    public static double calculateMotionVectorScore(int beginFrame, int endFrame){
+    public static double calculateMotionVectorScore(int width, int height, int beginFrame, int endFrame, String myRGBFramesFolderPath){
         double motionVectorScore = 0;
         double[][] blockMovement = new double[3][5]; // 15 blocks
         // (frame index, block x-coordinate, block y-coordinate, pixel x-y coordinate)

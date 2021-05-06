@@ -90,7 +90,7 @@ public class AudioAnalysis {
   public static final int BITS_PER_SAMPLE = 16;
   private static final double MAX_16_BIT = 32768;
 
-  public static List<Double> read(String filename) throws IOException, UnsupportedAudioFileException, UnsupportedAudioFileException {
+  public static double[] read(String filename) throws IOException, UnsupportedAudioFileException, UnsupportedAudioFileException {
     File file = new File(filename);
     AudioInputStream ais = AudioSystem.getAudioInputStream(file);
     AudioFormat audioFormat = ais.getFormat();
@@ -110,27 +110,19 @@ public class AudioAnalysis {
     }
     double total = 0;
 
-    List<Double> fResult = new ArrayList<>();
-    for(int j = 0; j < data.length; j++){
-//      if(j % 1600 == 0){
-//        System.out.println(j+" "+total/1600);
-//        fResult.add(total/1600);
+//    List<Double> fResult = new ArrayList<>();
+//    for(int j = 0; j < data.length; j++){
+//      if(j % 48000 == 0){
+//        System.out.println(j/48000+" "+total/48000);
+//        fResult.add(total/48000);
 //        total = 0;
-//      }else{
+//      }else {
 //        total += data[j];
 //      }
-
-      if(j % 48000 == 0){
-        System.out.println(j/48000+" "+total/48000);
-        fResult.add(total/48000);
-        total = 0;
-      }else {
-        total += data[j];
-      }
-    }
-    Collections.sort(fResult);
-    System.out.println(fResult);
-    return fResult;
+//    }
+//    Collections.sort(fResult);
+//    System.out.println(fResult);
+    return data;
   }
   
   public static void main(String[] args) throws IOException, WavFileException, UnsupportedAudioFileException {

@@ -14,8 +14,14 @@ public class VideoSummary {
   public static int width = 320;
   public static int height = 180;
   public static int totalFrames = 16200;
-  public static int minimumFramesPerShot = 30; // ~ 1 second
+  public static int minimumFramesPerShot = 90; // ~ 3 second
   public static int summaryFramesLimit = 2700;
+  public static double motionWeight = 4;
+  public static double hueWeight = 0.33;
+  public static double saturationWeight = 0.33;
+  public static double valueBrightnessWeight = 0.33;
+  public static double audioAmplitudeWeight = 2;
+  public static double audioFrequencyWeight = 1;
   //public static String myRGBFramesFolderPath = "/Users/daddy/Movies/project_dataset/frames_rgb/concert";
   public static String myRGBFramesFolderPath = "/Users/edmondsitu/Desktop/project_dataset/frames_rgb/concert";
   public static String myWAVPath = "/Users/edmondsitu/Desktop/project_dataset/audio/concert.wav";
@@ -63,11 +69,11 @@ public class VideoSummary {
 
     System.out.println("\n\nProcessing motion vector scoring for all shots...");
     //double[] normalizedMotionVectorScores = MotionVector.normalizeMotionVectorScore(MotionVector.motionVectorOfFrameShots(width, height, videoShots, myRGBFramesFolderPath), videoShots);
-    double[] normalizedMotionVectorScores = MotionVector.normalizeMotionVectorScore(motionVectorScores, videoShots);
+    double[] normalizedMotionVectorScores = MotionVector.normalizeMotionVectorScore(motionVectorScores, videoShots, motionWeight);
     System.out.println("\nProcessing HSV scoring for all shots...");
     // (0 for hue and 1 for saturation score and 2 for value/brightness score, shot index)
     //double[][] normalizedHueSaturationValueScores = HueSaturationValue.normalizedHueSaturationValueScores(HueSaturationValue.hueSaturationValueOfFrameShots(width, height, videoShots, myRGBFramesFolderPath), videoShots);
-    double[][] normalizedHueSaturationValueScores = HueSaturationValue.normalizedHueSaturationValueScores(hueSaturationValueScores, videoShots);
+    double[][] normalizedHueSaturationValueScores = HueSaturationValue.normalizedHueSaturationValueScores(hueSaturationValueScores, videoShots, hueWeight, saturationWeight, valueBrightnessWeight);
     System.out.println("\nProcessing Audio scoring for all shots...");
     // Audio
     double[] normalizedAudioScores = new double[videoShots.length];
@@ -82,7 +88,7 @@ public class VideoSummary {
     }
     // Normalize audio scores between 0 and 1
     for(int i = 0; i < normalizedAudioScores.length; i++){
-      normalizedAudioScores[i] = normalizedAudioScores[i]/maxAudioScore;
+      normalizedAudioScores[i] = normalizedAudioScores[i]/maxAudioScore*audioAmplitudeWeight;
     }
     //System.out.println("Normalized Audio Scores: "+Arrays.toString(normalizedAudioScores));
     Double[] analysisScores = new Double[videoShots.length];

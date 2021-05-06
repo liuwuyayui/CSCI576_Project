@@ -17,6 +17,9 @@ public class HueSaturationValue {
         int height = VideoSummary.height;
         int totalFrames = VideoSummary.totalFrames;
         int minimumFramesPerShot = VideoSummary.minimumFramesPerShot;
+        double hueWeight = VideoSummary.hueWeight;
+        double saturationWeight = VideoSummary.saturationWeight;
+        double valueBrightnessWeight = VideoSummary.valueBrightnessWeight;
         String myRGBFramesFolderPath = VideoSummary.myRGBFramesFolderPath;
         System.out.println("Processing HSV scoring for all shots...");
         int[][] videoShots = CSCI576VideoShotSegmentationProject.videoShotSegmentationColorSpaceHistogram(width, height, totalFrames, minimumFramesPerShot, myRGBFramesFolderPath);
@@ -64,7 +67,7 @@ public class HueSaturationValue {
         System.out.println("Value/Brightness Scores After Normalizing to Maximum Score: "+Arrays.toString(hueSaturationValueScores[1]));
         System.out.println("Number of Saturation and Value/Brightness Scores:"+hueSaturationValueScores.length);
         */
-        double[][] normalizedHueSaturationValueScores = normalizedHueSaturationValueScores(hueSaturationValueScores, videoShots);
+        double[][] normalizedHueSaturationValueScores = normalizedHueSaturationValueScores(hueSaturationValueScores, videoShots, hueWeight, saturationWeight, valueBrightnessWeight);
         System.out.println("Complete");
         for(int i = 0; i < videoShots.length; i++){
             System.out.println("["+videoShots[i][0]+", "+videoShots[i][1]+"]"+" = Hue:"+normalizedHueSaturationValueScores[0][i]+", Saturation: "+normalizedHueSaturationValueScores[1][i]+", Value/Brightness: "+normalizedHueSaturationValueScores[2][i]);
@@ -123,7 +126,7 @@ public class HueSaturationValue {
         return hueSaturationValueScore;
     }
 
-    public static double[][] normalizedHueSaturationValueScores(double[][] hueSaturationValueScores, int[][] videoShots){
+    public static double[][] normalizedHueSaturationValueScores(double[][] hueSaturationValueScores, int[][] videoShots, double hueWeight, double saturationWeight, double valueBrightnessWeight){
         double[][] normalizedHueSaturationValueScores = new double[3][hueSaturationValueScores[0].length];
         // Normalize to length of each shot
         for(int i = 0; i < hueSaturationValueScores[0].length; i++){
@@ -148,9 +151,9 @@ public class HueSaturationValue {
         }
         // Normalize between 0 and 1
         for(int i = 0; i < normalizedHueSaturationValueScores[0].length; i++){
-            normalizedHueSaturationValueScores[0][i] = normalizedHueSaturationValueScores[0][i]/maxHueScore;
-            normalizedHueSaturationValueScores[1][i] = normalizedHueSaturationValueScores[1][i]/maxSaturationScore;
-            normalizedHueSaturationValueScores[2][i] = normalizedHueSaturationValueScores[2][i]/maxValueBrightnessScore;
+            normalizedHueSaturationValueScores[0][i] = normalizedHueSaturationValueScores[0][i]/maxHueScore*hueWeight;
+            normalizedHueSaturationValueScores[1][i] = normalizedHueSaturationValueScores[1][i]/maxSaturationScore*saturationWeight;
+            normalizedHueSaturationValueScores[2][i] = normalizedHueSaturationValueScores[2][i]/maxValueBrightnessScore*valueBrightnessWeight;
         }
 
         return normalizedHueSaturationValueScores;

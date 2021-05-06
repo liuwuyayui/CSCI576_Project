@@ -21,6 +21,7 @@ public class MotionVector {
         int height = VideoSummary.height;
         int totalFrames = VideoSummary.totalFrames;
         int minimumFramesPerShot = VideoSummary.minimumFramesPerShot;
+        double motionWeight = VideoSummary.motionWeight;
         String myRGBFramesFolderPath = VideoSummary.myRGBFramesFolderPath;
         System.out.println("Processing motion vector scoring for all shots...");
         int[][] videoShots = CSCI576VideoShotSegmentationProject.videoShotSegmentationColorSpaceHistogram(width, height, totalFrames, minimumFramesPerShot, myRGBFramesFolderPath);
@@ -52,7 +53,7 @@ public class MotionVector {
         System.out.println("Motion Vector Scores After Normalizing to Maximum Score: "+Arrays.toString(motionVectorScores));
         System.out.println("Number of Motion Vector Scores:"+motionVectorScores.length);
         */
-        double[] normalizedMotionVectorScores = normalizeMotionVectorScore(motionVectorScores, videoShots);
+        double[] normalizedMotionVectorScores = normalizeMotionVectorScore(motionVectorScores, videoShots, motionWeight);
         System.out.println("Complete");
         /*
         for(int i = 0; i < videoShots.length; i++){
@@ -267,7 +268,7 @@ public class MotionVector {
         return Math.sqrt(Math.pow(x1-x2, 2)+Math.pow(y1-y2, 2));
     }
 
-    public static double[] normalizeMotionVectorScore(double[] motionVectorScores, int[][] videoShots){
+    public static double[] normalizeMotionVectorScore(double[] motionVectorScores, int[][] videoShots, double motionWeight){
         double[] normalizedMotionVectorScores = new double[motionVectorScores.length];
         double[] sortedMotionVectorScores = new double[motionVectorScores.length];
         // Normalize to length of each shot
@@ -299,7 +300,7 @@ public class MotionVector {
         }
         // Normalize between 0 and 1
         for(int i = 0; i < normalizedMotionVectorScores.length; i++){
-            normalizedMotionVectorScores[i] = normalizedMotionVectorScores[i]/maxScore;
+            normalizedMotionVectorScores[i] = normalizedMotionVectorScores[i]/maxScore*motionWeight;
         }
 
         return normalizedMotionVectorScores;

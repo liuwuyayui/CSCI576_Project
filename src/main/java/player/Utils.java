@@ -17,6 +17,8 @@ public class Utils {
     public static final int REQUEST_WIDTH = 640;
     public static final int REQUEST_HEIGHT = 360;
     
+    public static final double MILLS_PER_FRAME = 33.333333;
+    
     // Application window properties
     public static final int STAGE_WIDTH = 640;
     public static final int STAGE_HEIGHT = 400;
@@ -25,6 +27,7 @@ public class Utils {
     // directory
     public static String directory;
     public static String bgmDir;
+    public static String rgbFramesPath;
     public static final String DEFAULT_OPEN_DIR = "/Users/daddy/Movies";
     
     

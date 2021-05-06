@@ -3,28 +3,38 @@ package player;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Slider;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 class CanvasSchedule extends ScheduledService<Integer> {
-    int startFrame;
-    int lastFrame = Utils.FRAMES_LENGTH;
+    int startIndex;
+    int lastIndex = Utils.FRAMES_LENGTH;
     Canvas canvas;
     Slider slider;
     Map<Integer, Double> frameToBright;
     MediaPlayer bgmPlayer;
+    List<Integer> frames;
+    ColorAdjust ca = new ColorAdjust();
+    Set<Integer> breakPoints;
+    GraphicsContext gc;
     
-    public CanvasSchedule(Canvas canvas, Slider slider, int startFrame, Map<Integer, Double> frameToBright, MediaPlayer bgmPlayer) {
+    public CanvasSchedule(Canvas canvas, Slider slider, int startIndex, Map<Integer, Double> frameToBright, MediaPlayer bgmPlayer, List<Integer> frames, Set<Integer> breakPoints) {
         this.canvas = canvas;
         this.slider = slider;
-        this.startFrame = startFrame;
+        this.startIndex = startIndex;
         this.frameToBright = frameToBright;
         this.bgmPlayer = bgmPlayer;
+        this.frames = frames;
+        this.breakPoints = breakPoints;
+        gc = canvas.getGraphicsContext2D();
         
         setDelay(Duration.millis(0));
         setPeriod(Duration.millis(1000.0 / Utils.FRAME_RATE));
@@ -36,33 +46,33 @@ class CanvasSchedule extends ScheduledService<Integer> {
         return new Task<Integer>() {
             @Override
             protected Integer call() {
-                if (startFrame >= lastFrame) {
+                if (startIndex >= lastIndex) {
+                    bgmPlayer.pause();
+                    Main.isPlaying = false;
                     this.cancel();
                 }
-                startFrame += 1;
-                return startFrame;
+                startIndex += 1;
+                return startIndex;
             }
             
             @Override
             protected void updateValue(Integer value) {
-                String framePath = Utils.directory + "/frame" + startFrame + ".jpg";
+                int actualFrame = frames.get(value);
+                String framePath = Utils.directory + actualFrame + ".jpg";
                 Image newImg = new Image(framePath, Utils.REQUEST_WIDTH, Utils.REQUEST_HEIGHT, true, true);
-                ColorAdjust ca = new ColorAdjust();
-                Double brightness = frameToBright.get(startFrame);
-                if (brightness == null) {
-                    brightness = 0.0;
+                double brightness = frameToBright.getOrDefault(actualFrame, 0.0);
+                if (brightness != 0) {
+                    ca.setBrightness(brightness);
+                    gc.setEffect(ca);
+                    bgmPlayer.setVolume(brightness + 1);
                 }
-                ca.setBrightness(brightness);
-                canvas.getGraphicsContext2D().setEffect(ca);
-                canvas.getGraphicsContext2D().drawImage(newImg, 0, 0);
-                slider.setValue(startFrame);    // update value
-                double vol = brightnessToVol(brightness);
-                bgmPlayer.setVolume(vol);
+                gc.drawImage(newImg, 0, 0);
+                slider.setValue(value);
+                if (breakPoints.contains(actualFrame)) {
+                    System.out.println("found breakPoint: " + actualFrame);
+                    bgmPlayer.seek(Duration.millis(actualFrame * 1000.0 / Utils.FRAME_RATE));
+                }
             }
         };
-    }
-    
-    private double brightnessToVol(double brightness) {
-        return brightness + 1;
     }
 }

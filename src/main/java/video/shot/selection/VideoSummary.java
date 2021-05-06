@@ -34,13 +34,16 @@ public class VideoSummary {
         double[][] normalizedHueSaturationValueScores = HueSaturationValue.normalizedHueSaturationValueScores(HueSaturationValue.hueSaturationValueOfFrameShots(videoShots), videoShots);
         */
     long startTime = System.currentTimeMillis();   //获取开始时间
-    ArrayList<int[]> result = videoSummaryShots(width, height, totalFrames, minimumFramesPerShot, summaryFramesLimit, myRGBFramesFolderPath);
+    ArrayList<int[]> result = videoSummaryShots(width, height, totalFrames, minimumFramesPerShot, summaryFramesLimit, myRGBFramesFolderPath, myWAVPath);
     long endTime = System.currentTimeMillis(); //获取结束时间
-    System.out.println("程序运行时间： " + (endTime - startTime) + "ms");
     System.out.println("程序运行时间： " + (endTime - startTime) / 1000 + "s");
   }
   
-  public static ArrayList<int[]> videoSummaryShots(int width, int height, int totalFrames, int minimumFramesPerShot, int summaryFramesLimit, String myRGBFramesFolderPath) throws IOException, WavFileException {
+  public static ArrayList<int[]> videoSummaryShots(String myRGBFramesFolderPath, String myWAVPath) throws IOException, WavFileException {
+    return videoSummaryShots(width, height, totalFrames, minimumFramesPerShot, summaryFramesLimit, myRGBFramesFolderPath, myWAVPath);
+  }
+  
+  public static ArrayList<int[]> videoSummaryShots(int width, int height, int totalFrames, int minimumFramesPerShot, int summaryFramesLimit, String myRGBFramesFolderPath, String myWAVPath) throws IOException, WavFileException {
     HashMap<Double, int[]> videoShotsHashMap = new HashMap<>();
     System.out.println("Processing video shot segmentation of all frames: " + myRGBFramesFolderPath);
     // (shot index, begin and end frame of shot)

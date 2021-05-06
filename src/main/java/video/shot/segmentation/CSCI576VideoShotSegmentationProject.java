@@ -168,6 +168,7 @@ public class CSCI576VideoShotSegmentationProject {
     public static ArrayList<Integer> videoShotSegmentationSumAbsoluteDifference(int width, int height, int totalFrames, double threshold, String RGBFramesFolderPath){
         double[] framesValue = new double[totalFrames];
         ArrayList<Integer> videoBreakpoints = new ArrayList<>();
+        // [x][y][frame][rgb]
         int[][][][] intRGBFramePair;
 
         // Calculate value of each frame(i) to frame(i+1)
@@ -218,6 +219,7 @@ public class CSCI576VideoShotSegmentationProject {
     public static int[][] videoShotSegmentationColorSpaceHistogram(int width, int height, int totalFrames, int minimumFramesPerShot, String RGBFramesFolderPath){
         double[] framesValue = new double[totalFrames];
         ArrayList<Integer> videoBreakpoints = new ArrayList<>();
+        // [x][y][frame][rgb]
         int[][][][] intRGBFramePair;
 
 
@@ -258,6 +260,7 @@ public class CSCI576VideoShotSegmentationProject {
     public static double[] videoShotSegmentationColorSpaceHistogramForFramesValue(int width, int height, int totalFrames, int minimumFramesPerShot, String RGBFramesFolderPath){
         double[] framesValue = new double[totalFrames];
         ArrayList<Integer> videoBreakpoints = new ArrayList<>();
+        // [x][y][frame][rgb]
         int[][][][] intRGBFramePair;
 
 
@@ -387,6 +390,68 @@ public class CSCI576VideoShotSegmentationProject {
                 double r = intOriginalRGB[y][x][0];
                 double g = intOriginalRGB[y][x][1];
                 double b = intOriginalRGB[y][x][2];
+
+                double h = doubleOriginalHSV[y][x][0];
+                double s = doubleOriginalHSV[y][x][1];
+                double v = doubleOriginalHSV[y][x][2];
+
+                double min = Math.min(Math.min(r, g), b);
+                double max = Math.max(Math.max(r, g), b);
+                double delta = max-min;
+                v = max;
+
+                if(max != 0){
+                    s = delta/max;
+                }
+                else{
+                    s = 0;
+                    h = -1;
+                    continue;
+                }
+
+                if(r == max){
+                    h = (g-b)/delta;
+                }
+                else if(g == max){
+                    h = 2 + (b-r)/delta;
+                }
+                else{
+                    h = 4 + (r-g)/delta;
+                }
+                h *= 60;
+
+                if(h < 0){
+                    h += 360;
+                }
+
+                // Add to avoid NaN
+                if(delta == 0){
+                    h = 0;
+                }
+
+                doubleOriginalHSV[y][x][0] = h;
+                /*
+                System.out.println("RGB to HSV: Hue="+doubleOriginalHSV[y][x][0]);
+                if(Double.isNaN(doubleOriginalHSV[y][x][0])){
+                    System.out.println("delta="+delta);
+                    System.out.println("min="+min);
+                    System.out.println("max="+max);
+                }
+                */
+                doubleOriginalHSV[y][x][1] = s;
+                doubleOriginalHSV[y][x][2] = v;
+            }
+        }
+    }
+
+    public static void RGBtoHSVWithAnalysis(int width, int height, int[][][][] intOriginalRGB, double[][][] doubleOriginalHSV, int index){
+        // intOriginalRGB[x][y][frame][rgb]
+
+        for(int y = 0; y < height; y++){
+            for(int x = 0; x < width; x++){
+                double r = intOriginalRGB[y][x][index][0];
+                double g = intOriginalRGB[y][x][index][1];
+                double b = intOriginalRGB[y][x][index][2];
 
                 double h = doubleOriginalHSV[y][x][0];
                 double s = doubleOriginalHSV[y][x][1];

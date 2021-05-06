@@ -269,9 +269,26 @@ public class MotionVector {
 
     public static double[] normalizeMotionVectorScore(double[] motionVectorScores, int[][] videoShots){
         double[] normalizedMotionVectorScores = new double[motionVectorScores.length];
+        double[] sortedMotionVectorScores = new double[motionVectorScores.length];
         // Normalize to length of each shot
         for(int i = 0; i < motionVectorScores.length; i++){
             normalizedMotionVectorScores[i] = motionVectorScores[i]/((videoShots[i][1]-videoShots[i][0])+1);
+            sortedMotionVectorScores[i] = normalizedMotionVectorScores[i];
+        }
+        // Sort motion vector scores in ascending order
+        Arrays.sort(sortedMotionVectorScores);
+        // Select slowest motion score at the 10% mark
+        //double fastestScore = sortedMotionVectorScores[(int)(motionVectorScores.length*0.9)];
+        double slowestScore = sortedMotionVectorScores[(int)(motionVectorScores.length*0.1)];
+        //System.out.println("Fastest: "+sortedMotionVectorScores[motionVectorScores.length-1]);
+        //System.out.println("Slowest: "+sortedMotionVectorScores[0]);
+        //System.out.println("Fastest at 90%: "+fastestScore);
+        //System.out.println("Slowest at 10%: "+slowestScore);
+        // Adjust slow motion shots to original score * 1.25
+        for(int i = 0; i < normalizedMotionVectorScores.length; i++){
+            if(normalizedMotionVectorScores[i] <= slowestScore){
+                normalizedMotionVectorScores[i]*=1.25;
+            }
         }
         // Find maximum value of motion vector scores
         double maxScore = normalizedMotionVectorScores[0];

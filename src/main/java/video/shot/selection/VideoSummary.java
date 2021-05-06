@@ -2,6 +2,7 @@ package video.shot.selection;
 
 import analysis.HueSaturationValue;
 import analysis.MotionVector;
+import analysis.MotionVectorAndHSV;
 import audioAnalysis.AudioAnalysis;
 import javaWavFileIO.WavFileException;
 import video.shot.segmentation.CSCI576VideoShotSegmentationProject;
@@ -49,11 +50,21 @@ public class VideoSummary {
         CSCI576VideoShotSegmentationProject.printArray(videoShots);
         System.out.println("Number of Shots: "+videoShots.length);
         */
+
+    // Combine motion vector and HSV
+    // [0 for motion vector and 1 for HSV][video shots index]
+    double[] motionVectorScores = new double[videoShots.length];
+    // (0 for hue and 1 for saturation score and 2 for value/brightness score, number of shots)
+    double[][] hueSaturationValueScores = new double[3][videoShots.length];
+    MotionVectorAndHSV.calculateMotionVectorAndHSVScores(width, height, totalFrames, videoShots, motionVectorScores, hueSaturationValueScores, myRGBFramesFolderPath);
+
     System.out.println("\n\nProcessing motion vector scoring for all shots...");
-    double[] normalizedMotionVectorScores = MotionVector.normalizeMotionVectorScore(MotionVector.motionVectorOfFrameShots(width, height, videoShots, myRGBFramesFolderPath), videoShots);
+    //double[] normalizedMotionVectorScores = MotionVector.normalizeMotionVectorScore(MotionVector.motionVectorOfFrameShots(width, height, videoShots, myRGBFramesFolderPath), videoShots);
+    double[] normalizedMotionVectorScores = MotionVector.normalizeMotionVectorScore(motionVectorScores, videoShots);
     System.out.println("\nProcessing HSV scoring for all shots...");
     // (0 for hue and 1 for saturation score and 2 for value/brightness score, shot index)
-    double[][] normalizedHueSaturationValueScores = HueSaturationValue.normalizedHueSaturationValueScores(HueSaturationValue.hueSaturationValueOfFrameShots(width, height, videoShots, myRGBFramesFolderPath), videoShots);
+    //double[][] normalizedHueSaturationValueScores = HueSaturationValue.normalizedHueSaturationValueScores(HueSaturationValue.hueSaturationValueOfFrameShots(width, height, videoShots, myRGBFramesFolderPath), videoShots);
+    double[][] normalizedHueSaturationValueScores = HueSaturationValue.normalizedHueSaturationValueScores(hueSaturationValueScores, videoShots);
     System.out.println("\nProcessing Audio scoring for all shots...");
     // Audio
     double[] normalizedAudioScores = new double[videoShots.length];

@@ -27,6 +27,7 @@ public class Utils {
     // directory
     public static String directory;
     public static String bgmDir;
+    public static String rgbFramesPath;
     public static final String DEFAULT_OPEN_DIR = "/Users/daddy/Movies";
     
     

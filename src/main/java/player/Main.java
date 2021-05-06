@@ -1,5 +1,6 @@
 package player;
 
+import javaWavFileIO.WavFileException;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -21,6 +22,7 @@ import javafx.util.Duration;
 import video.shot.selection.VideoSummary;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class Main extends Application {
@@ -37,32 +39,27 @@ public class Main extends Application {
   @Override
   public void init() throws Exception {
     super.init();
-//        List<int[]> shots = VideoSummary.videoSummaryShots();
-    List<int[]> shots = new ArrayList<>();
-    shots.add(new int[]{9, 77});
-    shots.add(new int[]{78, 153});
-    shots.add(new int[]{216, 301});
-    shots.add(new int[]{541, 680});
-    shots.add(new int[]{751, 780});
-    
-    
-    frames = new ArrayList<>();
-    breakPoints = new HashSet<>();
-    frameToBright = new HashMap<>();
-    for (int[] cur : shots) {
-      int start = cur[0];
-      int end = cur[1];
-      breakPoints.add(start);
-      for (int i = start; i <= end; i++) {
-        frames.add(i);
-      }
-      
-      interpolate(frameToBright, start, start + FADING_LENGTH, false);
-      interpolate(frameToBright, end - FADING_LENGTH, end, true);
-      
-    }
+
+//    List<int[]> shots = VideoSummary.videoSummaryShots();
+
+
+//    frames = new ArrayList<>();
+//    breakPoints = new HashSet<>();
+//    frameToBright = new HashMap<>();
+//    for (int[] cur : shots) {
+//      int start = cur[0];
+//      int end = cur[1];
+//      breakPoints.add(start);
+//      for (int i = start; i <= end; i++) {
+//        frames.add(i);
+//      }
+//
+//      interpolate(frameToBright, start, start + FADING_LENGTH, false);
+//      interpolate(frameToBright, end - FADING_LENGTH, end, true);
+//  }
+
 //    curFrame = frames.get(0);
-    Utils.FRAMES_LENGTH = frames.size() - 1;
+//    Utils.FRAMES_LENGTH = frames.size() - 1;
 //        interpolate(frameToBright, 0, 30, true);
 //        interpolate(frameToBright, 31, 60, false);
 //        traverseMap(frameToBright, 0, 50);
@@ -142,36 +139,60 @@ public class Main extends Application {
       dc.setInitialDirectory(new File(Utils.DEFAULT_OPEN_DIR));
       File directory = dc.showDialog(stage);
       if (directory != null) {
-        Utils.directory = "file:" + directory.getAbsolutePath() + "/frame";
+        String jpegFramesPath = directory.getAbsolutePath();
+        String[] pathArray = pathArray(jpegFramesPath);
+        Utils.bgmDir = getWavPath(pathArray);
+        Utils.rgbFramesPath = getRgbPath(pathArray);
+        Utils.directory = "file:" + jpegFramesPath + "/frame";
         System.out.println(Utils.directory);
-        File[] files = directory.listFiles();
         
-        if (files != null) {
-//          Utils.FRAMES_LENGTH = files.length;
-          mediaBar.progressSlider.setMax(Utils.FRAMES_LENGTH);
-          int initialFrameNo = frames.get(0);
-          Image initialImage = new Image(Utils.directory + initialFrameNo + ".jpg",
-                  Utils.REQUEST_WIDTH,
-                  Utils.REQUEST_HEIGHT,
-                  true,
-                  true);
-          
-          canvas.getGraphicsContext2D().drawImage(initialImage, 0, 0);
+        try {
+          List<int[]> shots = VideoSummary.videoSummaryShots(Utils.rgbFramesPath, Utils.bgmDir);
+          frames = new ArrayList<>();
+          breakPoints = new HashSet<>();
+          frameToBright = new HashMap<>();
+          for (int[] cur : shots) {
+            int start = cur[0];
+            int end = cur[1];
+            breakPoints.add(start);
+            for (int i = start; i <= end; i++) {
+              frames.add(i);
+            }
+            
+            interpolate(frameToBright, start, start + FADING_LENGTH, false);
+            interpolate(frameToBright, end - FADING_LENGTH, end, true);
+          }
+          Utils.FRAMES_LENGTH = frames.size() - 1;
+        } catch (IOException | WavFileException e) {
+          e.printStackTrace();
         }
-      }
-    });
-    mediaBar.bgmChooser.setOnMouseClicked(event -> {
-      Stage stage = new Stage();
-      FileChooser fc = new FileChooser();
-      fc.setInitialDirectory(new File(Utils.DEFAULT_OPEN_DIR));
-      File file = fc.showOpenDialog(stage);
-      if (file != null) {
-        System.out.println(file.getAbsolutePath());
-        Utils.bgmDir = "file:" + file.getAbsolutePath();
-        media = new Media(Utils.bgmDir);
+        
+        mediaBar.progressSlider.setMax(Utils.FRAMES_LENGTH);
+        int initialFrameNo = frames.get(0);
+        Image initialImage = new Image(Utils.directory + initialFrameNo + ".jpg",
+                Utils.REQUEST_WIDTH,
+                Utils.REQUEST_HEIGHT,
+                true,
+                true);
+        
+        canvas.getGraphicsContext2D().drawImage(initialImage, 0, 0);
+        
+        media = new Media("file:" + Utils.bgmDir);
         bgmPlayer = new MediaPlayer(media);
       }
     });
+//    mediaBar.bgmChooser.setOnMouseClicked(event -> {
+//      Stage stage = new Stage();
+//      FileChooser fc = new FileChooser();
+//      fc.setInitialDirectory(new File(Utils.DEFAULT_OPEN_DIR));
+//      File file = fc.showOpenDialog(stage);
+//      if (file != null) {
+//        System.out.println(file.getAbsolutePath());
+//        Utils.bgmDir = "file:" + file.getAbsolutePath();
+//        media = new Media(Utils.bgmDir);
+//        bgmPlayer = new MediaPlayer(media);
+//      }
+//    });
 //    mediaBar.volButton.setOnMouseClicked(event -> {
 //      if (!mediaBar.isMute) {
 //        if (bgmPlayer != null) {
@@ -197,13 +218,16 @@ public class Main extends Application {
 //        bgmPlayer.setVolume(newValue.doubleValue());
 //      }
 //    });
+  
+    
     
     // layout
     AnchorPane ap = new AnchorPane();
     ap.getChildren().addAll(mediaBar, canvas);
     AnchorPane.setBottomAnchor(mediaBar, 10.0);
     AnchorPane.setLeftAnchor(mediaBar, 10.0);
-    
+  
+
     
     // Stage
     primaryStage.setTitle("Media Player for Video Summarization");
@@ -253,6 +277,40 @@ public class Main extends Application {
   
   public static void main(String[] args) {
     launch(args);
+  }
+  
+  private static String[] pathArray(String path) {
+    String[] result = path.split("/");
+//    for (String s : result) {
+//      System.out.println(s);
+//    }
+    return result;
+  }
+  
+  private static String getWavPath(String[] pathArray) {
+    StringBuilder sb = new StringBuilder();
+//    sb.append("file:");
+    for (int i = 1; i < pathArray.length - 2; i++) {
+      sb.append("/");
+      sb.append(pathArray[i]);
+    }
+    sb.append("/audio/");
+    sb.append(pathArray[pathArray.length - 1]).append(".wav");
+//    System.out.println(sb.toString());
+    return sb.toString();
+  }
+  
+  private static String getRgbPath(String[] pathArray) {
+    StringBuilder sb = new StringBuilder();
+//    sb.append("file:");
+    for (int i = 1; i < pathArray.length - 2; i++) {
+      sb.append("/");
+      sb.append(pathArray[i]);
+    }
+    sb.append("/frames_rgb/");
+    sb.append(pathArray[pathArray.length - 1]);
+//    System.out.println(sb.toString());
+    return sb.toString();
   }
 }
 

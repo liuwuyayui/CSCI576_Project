@@ -22,7 +22,7 @@ public class MediaBar extends HBox {
     
     
     Button playOrPause = new Button();
-    Button bgmChooser = new Button();
+//    Button bgmChooser = new Button();
     Button directoryChooser = new Button();
     Slider progressSlider;
 //    Button volButton;
@@ -36,9 +36,8 @@ public class MediaBar extends HBox {
         
         
         playOrPause.setGraphic(new ImageView(playerPlay));
-//        playOrPause.setPrefWidth(100);
-        bgmChooser.setTooltip(new Tooltip("Select Corresponding BGM"));
-        bgmChooser.setGraphic(new ImageView(iconMusic));
+//        bgmChooser.setTooltip(new Tooltip("Select Corresponding BGM"));
+//        bgmChooser.setGraphic(new ImageView(iconMusic));
         
         progressSlider = new Slider(0, barLength, 0);
         progressSlider.setPrefWidth(Utils.PROGRESS_SLIDER_PRE_WIDTH);
@@ -56,7 +55,7 @@ public class MediaBar extends HBox {
 //        volSlider.setMinorTickCount(1);
         
 //        getChildren().addAll(playOrPause, directoryChooser, bgmChooser, progressSlider, volButton, volSlider);
-        getChildren().addAll(playOrPause, directoryChooser, bgmChooser, progressSlider);
+        getChildren().addAll(playOrPause, directoryChooser, progressSlider);
         setHeight(50.0);
         setAlignment(Pos.CENTER);
         setSpacing(5.0);

@@ -129,7 +129,7 @@ public class VideoSummary {
     System.out.println("\nSummary Important Shots: ");
     for (int i = 0; i < importantShots.size(); i++) {
       int[] shot = importantShots.get(i);
-      System.out.println("{" + shot[0] + ", " + shot[1] + "} = " + analysisScores[i]);
+      System.out.println("{" + shot[0] + ", " + shot[1] + "} = " + analysisScores[i] + " = " + normalizedMotionVectorScores[i] + " + " + hueSaturationValueScores[0][i] + " + " + hueSaturationValueScores[1][i] + " + " + hueSaturationValueScores[2][i] + " + " + normalizedAudioScores[i]);
     }
     System.out.println("Number of Summary Important Shots: " + importantShots.size());
     System.out.println("Number of Frames For Summary Important Shots: " + numFrames);

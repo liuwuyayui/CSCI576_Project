@@ -36,7 +36,13 @@ public class Utils {
   //public static final String DEFAULT_OPEN_DIR = "/Users/edmondsitu/Desktop";
   
   public static List<int[]> getTest1Frames() {
-    int[][] array = {{6739,7018}, {7256,8501}, {9961,10211}, {10212,10438}, {10439,10538}, {10539,10683}, {10684,10993}, {12013,12180}};
+    int[][] array = {{6739, 7018}, {7256, 8501}, {12835, 12978}, {8846, 8989}, {8615, 8717}, {12979, 13199}, {6479, 6738}, {13646, 13803}, {14075, 14220}};
+    return new ArrayList<>(Arrays.asList(array));
+  }
+  
+  
+  public static List<int[]> getTest2Frames() {
+    int[][] array = {{2168, 2296}, {2297, 2406}, {2407, 2503}, {2504, 2645}, {3009, 3102}, {3103, 3271}, {3272, 3508}, {13167, 13442}, {13443, 13626}, {13627, 13866}, {13867, 13971}, {13972, 14230}, {14435, 14676}, {14811, 14912}, {14913, 15099}, {15100, 15205}, {15206, 15308}};
     return new ArrayList<>(Arrays.asList(array));
   }
 }

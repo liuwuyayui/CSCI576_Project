@@ -145,14 +145,19 @@ public class Main extends Application {
         Utils.rgbFramesPath = getRgbPath(pathArray);
         Utils.directory = "file:" + jpegFramesPath + "/frame";
         System.out.println(Utils.directory);
-  
+        
         List<int[]> shots = null;
         try {
+          long startTime = System.currentTimeMillis();   //获取开始时间
           shots = VideoSummary.videoSummaryShots(Utils.rgbFramesPath, Utils.bgmDir);
+          long endTime = System.currentTimeMillis(); //获取结束时间
+          System.out.println("Total Frames Analyzing Time： " + (endTime - startTime) / 1000 + "s");
+
         } catch (IOException | WavFileException e) {
           e.printStackTrace();
         }
-//        List<int[]> shots = Utils.getTest1Frames();
+        
+//        shots = Utils.getTest2Frames();
         frames = new ArrayList<>();
         breakPoints = new HashSet<>();
         frameToBright = new HashMap<>();

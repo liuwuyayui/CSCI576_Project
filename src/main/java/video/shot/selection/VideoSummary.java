@@ -16,11 +16,13 @@ public class VideoSummary {
   public static int totalFrames = 16200;
   public static int minimumFramesPerShot = 90; // ~ 3 second
   public static int summaryFramesLimit = 2700;
-  public static double motionWeight = 4;
-  public static double hueWeight = 0.33;
-  public static double saturationWeight = 0.33;
-  public static double valueBrightnessWeight = 0.33;
+  
+  public static double motionWeight = 2;
+  public static double hueWeight = 1;
+  public static double saturationWeight = 1;
+  public static double valueBrightnessWeight = 1;
   public static double audioAmplitudeWeight = 2;
+  
   public static double audioFrequencyWeight = 1;
   //public static String myRGBFramesFolderPath = "/Users/daddy/Movies/project_dataset/frames_rgb/concert";
   public static String myRGBFramesFolderPath = "/Users/edmondsitu/Desktop/project_dataset/frames_rgb/concert";

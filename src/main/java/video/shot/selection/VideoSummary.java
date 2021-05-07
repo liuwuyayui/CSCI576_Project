@@ -129,9 +129,9 @@ public class VideoSummary {
     System.out.println("\nSummary Important Shots: ");
     for (int i = 0; i < importantShots.size(); i++) {
       int[] shot = importantShots.get(i);
-      System.out.println("[" + shot[0] + ", " + shot[1] + "] = " + analysisScores[i]);
+      System.out.println("{" + shot[0] + ", " + shot[1] + "} = " + analysisScores[i]);
     }
-    System.out.print("\n\nImportant Shots: ");
+    System.out.print("\nImportant Shots: ");
     CSCI576VideoShotSegmentationProject.printArrayList(importantShots);
     System.out.println("Number of Summary Important Shots: " + importantShots.size());
     System.out.println("Number of Frames For Summary Important Shots: " + numFrames);

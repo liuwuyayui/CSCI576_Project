@@ -507,12 +507,21 @@ public class CSCI576VideoShotSegmentationProject {
     }
 
     public static void printArray(int[][] videoShots){
-        System.out.print("[");
+        System.out.print("{");
         for(int i = 0; i < videoShots.length-1; i++){
-            System.out.print("["+videoShots[i][0]+","+videoShots[i][1]+"], ");
+            System.out.print("{"+videoShots[i][0]+","+videoShots[i][1]+"}, ");
         }
-        System.out.print("["+videoShots[videoShots.length-1][0]+","+videoShots[videoShots.length-1][1]+"]");
-        System.out.println("]");
+        System.out.print("{"+videoShots[videoShots.length-1][0]+","+videoShots[videoShots.length-1][1]+"}");
+        System.out.println("}");
+    }
+
+    public static void printArrayList(ArrayList<int[]> videoShots){
+        System.out.print("{");
+        for(int i = 0; i < videoShots.size()-1; i++){
+            System.out.print("{"+videoShots.get(i)[0]+","+videoShots.get(i)[1]+"}, ");
+        }
+        System.out.print("{"+videoShots.get(videoShots.size()-1)[0]+","+videoShots.get(videoShots.size()-1)[1]+"}");
+        System.out.println("}");
     }
 
     public static void readImageRGB(int width, int height, String imgPath, BufferedImage img){

@@ -59,8 +59,6 @@ public class MediaBar extends HBox {
         setHeight(50.0);
         setAlignment(Pos.CENTER);
         setSpacing(5.0);
-        
-        
     }
     
     

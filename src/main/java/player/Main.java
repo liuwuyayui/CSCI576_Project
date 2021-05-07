@@ -145,10 +145,14 @@ public class Main extends Application {
         Utils.rgbFramesPath = getRgbPath(pathArray);
         Utils.directory = "file:" + jpegFramesPath + "/frame";
         System.out.println(Utils.directory);
-
-
-//          List<int[]> shots = VideoSummary.videoSummaryShots(Utils.rgbFramesPath, Utils.bgmDir);
-        List<int[]> shots = Utils.getTest1Frames();
+  
+        List<int[]> shots = null;
+        try {
+          shots = VideoSummary.videoSummaryShots(Utils.rgbFramesPath, Utils.bgmDir);
+        } catch (IOException | WavFileException e) {
+          e.printStackTrace();
+        }
+//        List<int[]> shots = Utils.getTest1Frames();
         frames = new ArrayList<>();
         breakPoints = new HashSet<>();
         frameToBright = new HashMap<>();

@@ -145,27 +145,27 @@ public class Main extends Application {
         Utils.rgbFramesPath = getRgbPath(pathArray);
         Utils.directory = "file:" + jpegFramesPath + "/frame";
         System.out.println(Utils.directory);
+
+
+//          List<int[]> shots = VideoSummary.videoSummaryShots(Utils.rgbFramesPath, Utils.bgmDir);
+        List<int[]> shots = Utils.getTest1Frames();
+        frames = new ArrayList<>();
+        breakPoints = new HashSet<>();
+        frameToBright = new HashMap<>();
         
-        try {
-          List<int[]> shots = VideoSummary.videoSummaryShots(Utils.rgbFramesPath, Utils.bgmDir);
-          frames = new ArrayList<>();
-          breakPoints = new HashSet<>();
-          frameToBright = new HashMap<>();
-          for (int[] cur : shots) {
-            int start = cur[0];
-            int end = cur[1];
-            breakPoints.add(start);
-            for (int i = start; i <= end; i++) {
-              frames.add(i);
-            }
-            
-            interpolate(frameToBright, start, start + FADING_LENGTH, false);
-            interpolate(frameToBright, end - FADING_LENGTH, end, true);
+        for (int[] cur : shots) {
+          int start = cur[0];
+          int end = cur[1];
+          breakPoints.add(start);
+          for (int i = start; i <= end; i++) {
+            frames.add(i);
           }
-          Utils.FRAMES_LENGTH = frames.size() - 1;
-        } catch (IOException | WavFileException e) {
-          e.printStackTrace();
+          
+          interpolate(frameToBright, start, start + FADING_LENGTH, false);
+          interpolate(frameToBright, end - FADING_LENGTH, end, true);
         }
+        Utils.FRAMES_LENGTH = frames.size() - 1;
+        
         
         mediaBar.progressSlider.setMax(Utils.FRAMES_LENGTH);
         int initialFrameNo = frames.get(0);
@@ -218,7 +218,6 @@ public class Main extends Application {
 //        bgmPlayer.setVolume(newValue.doubleValue());
 //      }
 //    });
-  
     
     
     // layout
@@ -226,8 +225,7 @@ public class Main extends Application {
     ap.getChildren().addAll(mediaBar, canvas);
     AnchorPane.setBottomAnchor(mediaBar, 10.0);
     AnchorPane.setLeftAnchor(mediaBar, 10.0);
-  
-
+    
     
     // Stage
     primaryStage.setTitle("Media Player for Video Summarization");

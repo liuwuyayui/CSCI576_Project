@@ -13,15 +13,15 @@ import java.util.*;
 public class VideoSummary {
   public static int width = 320;
   public static int height = 180;
-  public static int totalFrames = 1000;
+  public static int totalFrames = 16200;
   public static int minimumFramesPerShot = 90; // ~ 3 second
-  public static int summaryFramesLimit = 300;
+  public static int summaryFramesLimit = 2700;
   
-  public static double motionWeight = 2;
+  public static double motionWeight = 1;
   public static double hueWeight = 1;
   public static double saturationWeight = 1;
   public static double valueBrightnessWeight = 1;
-  public static double audioAmplitudeWeight = 2;
+  public static double audioAmplitudeWeight = 1;
   
   public static double audioFrequencyWeight = 1;
   //public static String myRGBFramesFolderPath = "/Users/daddy/Movies/project_dataset/frames_rgb/concert";

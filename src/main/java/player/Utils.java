@@ -33,9 +33,10 @@ public class Utils {
   public static String bgmDir;
   public static String rgbFramesPath;
   public static final String DEFAULT_OPEN_DIR = "/Users/daddy/Movies";
+  //public static final String DEFAULT_OPEN_DIR = "/Users/edmondsitu/Desktop";
   
   public static List<int[]> getTest1Frames() {
-    int[][] array = {{779, 1012}, {6739, 7018}, {7019, 7255}, {7256, 8501}, {10539, 10683}, {10994, 11451}, {12835, 12978}};
+    int[][] array = {{6739,7018}, {7256,8501}, {9961,10211}, {10212,10438}, {10439,10538}, {10539,10683}, {10684,10993}, {12013,12180}};
     return new ArrayList<>(Arrays.asList(array));
   }
 }

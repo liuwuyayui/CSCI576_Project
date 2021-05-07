@@ -64,6 +64,7 @@ public class MotionVectorAndHSV {
                             hueSaturationValueScore[0]+=(doubleOriginalHSV1[j][k][0]+doubleOriginalHSV2[j][k][0]);
                             hueSaturationValueScore[1]+=(doubleOriginalHSV1[j][k][1]+doubleOriginalHSV2[j][k][1]);
                             hueSaturationValueScore[2]+=(doubleOriginalHSV1[j][k][2]+doubleOriginalHSV2[j][k][2]);
+                            hueSaturationValueScore[2]+=(Math.sqrt(0.241*intRGBFramePair[j][k][0][0]+0.691*intRGBFramePair[j][k][0][1]+0.068*intRGBFramePair[j][k][0][2])+Math.sqrt(0.241*intRGBFramePair[j][k][1][0]+0.691*intRGBFramePair[j][k][1][1]+0.068*intRGBFramePair[j][k][1][2]));
                             /*
                             if(index < 1000) {
                                 System.out.println(index);

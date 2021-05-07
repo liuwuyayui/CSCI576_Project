@@ -13,9 +13,9 @@ import java.util.*;
 public class VideoSummary {
   public static int width = 320;
   public static int height = 180;
-  public static int totalFrames = 16200;
+  public static int totalFrames = 1000;
   public static int minimumFramesPerShot = 90; // ~ 3 second
-  public static int summaryFramesLimit = 2700;
+  public static int summaryFramesLimit = 300;
   
   public static double motionWeight = 2;
   public static double hueWeight = 1;
@@ -25,8 +25,10 @@ public class VideoSummary {
   
   public static double audioFrequencyWeight = 1;
   //public static String myRGBFramesFolderPath = "/Users/daddy/Movies/project_dataset/frames_rgb/concert";
-  public static String myRGBFramesFolderPath = "/Users/edmondsitu/Desktop/project_dataset/frames_rgb/concert";
-  public static String myWAVPath = "/Users/edmondsitu/Desktop/project_dataset/audio/concert.wav";
+  //public static String myRGBFramesFolderPath = "/Users/edmondsitu/Desktop/project_dataset/frames_rgb/concert";
+  public static String myRGBFramesFolderPath = "/Users/edmondsitu/Desktop/test_data/frames_rgb/test1";
+  //public static String myWAVPath = "/Users/edmondsitu/Desktop/project_dataset/audio/concert.wav";
+  public static String myWAVPath = "/Users/edmondsitu/Desktop/test_data/audio/test1.wav";
   
   public static void main(String[] args) throws IOException, WavFileException {
         /*
@@ -131,7 +133,7 @@ public class VideoSummary {
     System.out.println("\nSummary Important Shots: ");
     for (int i = 0; i < importantShots.size(); i++) {
       int[] shot = importantShots.get(i);
-      System.out.println("{" + shot[0] + ", " + shot[1] + "} = " + analysisScores[i] + " = " + normalizedMotionVectorScores[i] + " + " + hueSaturationValueScores[0][i] + " + " + hueSaturationValueScores[1][i] + " + " + hueSaturationValueScores[2][i] + " + " + normalizedAudioScores[i]);
+      System.out.println("{" + shot[0] + ", " + shot[1] + "} = total: " + analysisScores[i] + " = motion: " + normalizedMotionVectorScores[i] + " + hue: " + normalizedHueSaturationValueScores[0][i] + " + saturation: " + normalizedHueSaturationValueScores[1][i] + " + brightness: " + normalizedHueSaturationValueScores[2][i] + " + audio: " + normalizedAudioScores[i]);
     }
     System.out.println("Number of Summary Important Shots: " + importantShots.size());
     System.out.println("Number of Frames For Summary Important Shots: " + numFrames);
